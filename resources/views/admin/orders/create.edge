@@ -1,0 +1,82 @@
+@layout('layouts.admin')
+
+@section('breadcrumbs')
+<div class="breadcrumbs-area clearfix">
+    <h4 class="page-title pull-left">Orders</h4>
+    <ul class="breadcrumbs pull-left">
+        <li><a href="/admin">Dashboard</a></li>
+        <li><a href="/admin/products">All Orders</a></li>
+        <li><span>Add New Order</span></li>
+    </ul>
+  </div>
+@endsection
+
+@section('content')
+<div class="col-12 mt-5">
+    <div class="card">
+        <div class="card-body">
+            <!--h4 class="header-title">Textual inputs</h4-->
+            <form action="/admin/orders" method="post">
+                {{ csrfField() }}
+                <fieldset enabled>
+                    <div class="form-group row">
+                        <div class="col-sm-12 col-md-6">
+                            <label for="f_name" class="col-form-label">First Name</label>
+                            <input class="form-control" type="text" value="" id="f_name" name="f_name" required>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <label for="l_name" class="col-form-label">Last Name</label>
+                            <input class="form-control" type="text" value="" id="l_name" name="l_name" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12 col-md-6">
+                            <label for="address" class="col-form-label">Address</label>
+                            <input class="form-control" type="text" value="" id="address" name="address" required>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <label for="address2" class="col-form-label">Address2</label>
+                            <input class="form-control" type="text" value="" id="address2" name="address2">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12 col-md-6">
+                            <label for="city" class="col-form-label">City</label>
+                            <input class="form-control" type="text" value="" id="city" name="city" required>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <label for="state" class="col-form-label">State</label>
+                            <input class="form-control" type="text" value="" id="state" name="state" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12 col-md-6">
+                            <label for="country" class="col-form-label">Country</label>
+                            <input class="form-control" type="text" value="USA" id="country" name="country" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12 col-md-6">
+                            <label for="payment_type" class="col-form-label">Payment Type</label>
+                            <input class="form-control" type="text" value="Paypal" id="payment_type" name="payment_type" required>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <label for="payment_confirmation" class="col-form-label">Payment Confirmation Number</label>
+                            <input class="form-control" type="text" value="" id="payment_confirmation" name="payment_confirmation" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12 col-md-6">
+                            <label class="col-form-label">Product</label>
+                            <select class="custom-select" style="height: calc(2.55rem + 2px);" name="product" required>
+                                <option value="1">One</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-4 pl-4 pr-4">Submit</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
