@@ -8,7 +8,7 @@ class CategoryController {
             let categories = await Database.raw(`
                 SELECT c.id, c.name,
                        CONCAT(u.f_name, ' ', u.l_name) AS user,
-                       DATE_FORMAT(c.updated_at, '%W %b %d %Y %h:%i %p') AS updated_at
+                       DATE_FORMAT(c.updated_at, '%a %b %d %Y %h:%i %p') AS updated_at
                 FROM inventory.categories c
                 INNER JOIN inventory.users u
                 ON c.users_id = u.id

@@ -8,7 +8,7 @@ class BrandController {
             let brands = await Database.raw(`
                 SELECT b.id, b.name, b.image, c.name AS category,
                        CONCAT(u.f_name, ' ', u.l_name) AS user,
-                       DATE_FORMAT(b.updated_at, '%W %b %d %Y %h:%i %p') AS updated_at
+                       DATE_FORMAT(b.updated_at, '%a %b %d %Y %h:%i %p') AS updated_at
                 FROM inventory.brands b
                 INNER JOIN inventory.categories c
                     ON b.categories_id = c.id
