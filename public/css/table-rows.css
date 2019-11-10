@@ -1,0 +1,12 @@
+.ims-brands tr th, .ims-brands tr td,
+.ims-products tr th, .ims-products tr td
+{
+    vertical-align: middle;
+    height: 80px;
+}
+
+.ims-brands tr td img,
+.ims-products tr td img
+{
+    max-height: 55px;
+}
