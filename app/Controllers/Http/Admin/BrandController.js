@@ -26,24 +26,31 @@ class BrandController {
     async store({view, request, response}) {
         try {
             const brand = request.post()
-            const image = request.file('image', {
-                types: ['image'],
-                size: '2mb',
-                extnames: ['png', 'jpg', 'jpeg', 'gif']
-            })
-            const imageName = `${brand.name.replace(/[^-_a-zA-Z0-9.]+/g, '')}.${image.extname}`
-            await image.move('public/images/ims/brands', {
-                name: imageName,
-                overwrite: true
-            })
-            if (!image.moved()) {
-                throw image.error()
+            let imageName = null
+            if (request.file('image')) {
+                const image = request.file('image', {
+                    types: ['image'],
+                    size: '2mb',
+                    extnames: ['png', 'jpg', 'jpeg', 'gif']
+                })
+                imageName = `${brand.name.replace(/[^-_a-zA-Z0-9.]+/g, '')}.${image.extname}`
+                await image.move('public/images/ims/brands', {
+                    name: imageName,
+                    overwrite: true
+                })
+                if (!image.moved()) {
+                    throw image.error()
+                }
             }
             await Database.raw(`
-                INSERT INTO inventory.brands (name, image, categories_id, users_id)
+                INSERT INTO inventory.brands (
+                    name,
+                    ${(imageName) ? 'image,' : ''}
+                    categories_id, users_id
+                )
                 VALUES (
                     ${escape(brand.name)},
-                    ${escape('/images/ims/brands/' + imageName)},
+                    ${(imageName) ? escape('/images/ims/brands/' + imageName) + ',' : ''}
                     ${escape(brand.category)},
                     1
                 );
@@ -91,13 +98,14 @@ class BrandController {
     async update({view, request, response, params}) {
         try {
             const brand = request.post()
+            let imageName = null
             if (request.file('image')) {
                 const image = request.file('image', {
                     types: ['image'],
                     size: '2mb',
                     extnames: ['png', 'jpg', 'jpeg', 'gif']
                 })
-                const imageName = `${brand.name.replace(/[^-_a-zA-Z0-9.]+/g, '')}.${image.extname}`
+                imageName = `${brand.name.replace(/[^-_a-zA-Z0-9.]+/g, '')}.${image.extname}`
                 await image.move('public/images/ims/brands', {
                     name: imageName,
                     overwrite: true
@@ -105,15 +113,11 @@ class BrandController {
                 if (!image.moved()) {
                     throw image.error()
                 }
-                await Database.raw(`
-                    UPDATE inventory.brands
-                    SET image = ${escape('/images/ims/brands/' + imageName)}
-                    WHERE id = ${parseInt(params.id)}
-                `)
             }
             await Database.raw(`
                 UPDATE inventory.brands
                 SET name = ${escape(brand.name)},
+                    ${(imageName) ? 'image = ' + escape('/images/ims/brands/' + imageName) + ',' : ''}
                     categories_id = ${parseInt(brand.category)}
                 WHERE id = ${parseInt(params.id)}
             `)
