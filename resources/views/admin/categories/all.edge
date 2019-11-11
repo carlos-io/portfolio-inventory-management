@@ -45,7 +45,7 @@
                                             <form action="/admin/categories/{{ category.id }}/delete?_method=DELETE" method="post">
                                                 {{ csrfField() }}
                                                 <button type="submit" class="text-danger" style="border:none; background:none;"
-                                                        onclick='javascript:return confirm("Are you sure you want to delete \\"{{ category.name }}\\"?")'>
+                                                        onclick='javascript:return confirm("Are you sure you want to delete \\"{{ category.name }}\\" and all associated brands/products?")'>
                                                     <i class="ti-trash"></i>
                                                 </button>
                                             </form>
