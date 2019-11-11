@@ -162,7 +162,7 @@ class ProductController {
                     size = ${escape(product.size)},
                     qty = ${parseInt(product.qty)},
                     brands_id = ${escape(product.brand_id)}
-                WHERE id = ${params.id}
+                WHERE id = ${parseInt(params.id)}
             `)
             return response.redirect('/admin/products')
         } catch (error) {
