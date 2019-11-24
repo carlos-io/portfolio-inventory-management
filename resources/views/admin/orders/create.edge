@@ -5,7 +5,7 @@
     <h4 class="page-title pull-left">Orders</h4>
     <ul class="breadcrumbs pull-left">
         <li><a href="/admin">Dashboard</a></li>
-        <li><a href="/admin/products">All Orders</a></li>
+        <li><a href="/admin/orders">All Orders</a></li>
         <li><span>Add New Order</span></li>
     </ul>
   </div>
@@ -15,8 +15,7 @@
 <div class="col-12 mt-5">
     <div class="card">
         <div class="card-body">
-            <!--h4 class="header-title">Textual inputs</h4-->
-            <form action="/admin/orders" method="post">
+            <form id="form" onsubmit="postData(); return false">
                 {{ csrfField() }}
                 <fieldset enabled>
                     <div class="form-group row">
@@ -45,14 +44,32 @@
                             <input class="form-control" type="text" value="" id="city" name="city" required>
                         </div>
                         <div class="col-sm-12 col-md-6">
-                            <label for="state" class="col-form-label">State</label>
-                            <input class="form-control" type="text" value="" id="state" name="state" required>
+                            <label class="col-form-label">State / Province</label>
+                            <select id="state" class="custom-select" style="height: calc(2.55rem + 2px);" name="state" required>
+                            @each(cs in countries_states)
+                                @if(cs.country == "United States")
+                                    @each(state in cs.states)
+                                        <option value="{{ state }}">{{ state }}</option>
+                                    @endeach
+                                @endif
+                            @endeach
+                            </select>
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-sm-12 col-md-6">
-                            <label for="country" class="col-form-label">Country</label>
-                            <input class="form-control" type="text" value="USA" id="country" name="country" required>
+                            <label for="zipcode" class="col-form-label">Zip / Postal code</label>
+                            <input class="form-control" type="text" value="" id="zipcode" name="zipcode" required>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <label class="col-form-label">Country</label>
+                            <select class="custom-select" style="height: calc(2.55rem + 2px);" name="country" onchange="javascript:updateStates(country)" required>
+                            @each(cs in countries_states)
+                                <option value="{{ cs.country }}" {{ (cs.country === 'United States') ? 'selected' : '' }}>
+                                    {{ cs.country }}
+                                </option>
+                            @endeach
+                            </select>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -61,16 +78,66 @@
                             <input class="form-control" type="text" value="Paypal" id="payment_type" name="payment_type" required>
                         </div>
                         <div class="col-sm-12 col-md-6">
-                            <label for="payment_confirmation" class="col-form-label">Payment Confirmation Number</label>
-                            <input class="form-control" type="text" value="" id="payment_confirmation" name="payment_confirmation" required>
+                            <label for="invoice" class="col-form-label">Invoice #</label>
+                            <input class="form-control" type="text" value="" id="invoice" name="invoice" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-sm-12 col-md-6">
-                            <label class="col-form-label">Product</label>
-                            <select class="custom-select" style="height: calc(2.55rem + 2px);" name="product" required>
-                                <option value="1">One</option>
+                        <div class="col-sm-12 col-md-3">
+                            <label for="brand" class="col-form-label">Brands</label>
+                            <select id="brand" class="custom-select" style="height: calc(2.55rem + 2px);" onchange="javascript:updateProducts(brand)" required>
+                                <option value="" disabled selected hidden></option>
+                                @set('current_category', '')
+                                @set('current_brand', '')
+                                @each(cbp in categories_brands_products)
+                                    @if(current_category != cbp.category_name)
+                                        @set('current_category', cbp.category_name)
+                                        <option value="{{ cbp.category_id }}" disabled>{{ cbp.category_name }}</option>
+                                    @endif
+                                    @if(current_brand != cbp.brand_name)
+                                        @set('current_brand', cbp.brand_name)
+                                        <option value="{{ cbp.brand_id }}">&nbsp;&nbsp;&nbsp;{{ cbp.brand_name }}</option>
+                                    @endif
+                                @endeach
                             </select>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <label for="product" class="col-form-label">Products</label>
+                            <select id="product" class="custom-select" style="height: calc(2.55rem + 2px);" onchange="javascript:updateQty()" required>
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-2">
+                            <label for="qty" class="col-form-label">Qty</label>
+                            <select id="qty" class="custom-select" style="height: calc(2.55rem + 2px);" required>
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-1">
+                            <button type="button" class="btn btn-primary" style="margin-top: 34px;" onclick="javascript:addProduct()">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12 col-md-12 mt-4">
+                            <div class="single-table">
+                                <div class="table-responsive">
+                                    <table class="table table-hover progress-table text-center">
+                                        <thead class="text-uppercase">
+                                            <tr>
+                                                <th scope="col">Brand</th>
+                                                <th scope="col">Product</th>
+                                                <th scope="col">Image</th>
+                                                <th scope="col">SKU</th>
+                                                <th scope="col">Material</th>
+                                                <th scope="col">Color</th>
+                                                <th scope="col">Size</th>
+                                                <th scope="col">Qty</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="ims-products">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary mt-4 pl-4 pr-4">Submit</button>
@@ -79,4 +146,130 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+    <script>
+        var cs = {{{ toJSON(countries_states) }}};
+        var updateStates = function(country) {
+            $("#state").children().remove();
+            var selected = country.value;
+            for (var i = 0; i < cs.length; i++) {
+                if (cs[i].country === selected) {
+                    for (var j = 0; j < cs[i].states.length; j++) {
+                        $("<option />").text(cs[i].states[j]).appendTo("#state");
+                    }
+                }
+            }
+        }
+
+        var cbp = {{{ toJSON(categories_brands_products) }}};
+        var updateProducts = function(brand) {
+            $("#product").children().remove();
+            var selected = brand.value;
+            for (var i = 0; i < cbp.length; i++) {
+                if (cbp[i].brand_id === parseInt(selected)) {
+                    var spacing = "&nbsp;&nbsp;&nbsp;&nbsp;";
+                    $("<option />").val(cbp[i].product_id).html(
+                        cbp[i].product_name + spacing +
+                        "(" + cbp[i].sku + ")" + spacing +
+                        cbp[i].material + spacing +
+                        cbp[i].color + spacing +
+                        cbp[i].size
+                    ).appendTo("#product");
+                    updateQty();
+                }
+            }
+        }
+
+        var updateQty = function() {
+            $("#qty").children().remove();
+            var selected = $("#product").val();
+            for (var i = 0; i < cbp.length; i++) {
+                if (cbp[i].product_id === parseInt(selected)) {
+                    if (cbp[i].qty === 0) {
+                        $("<option />").val(0).text(0).appendTo("#qty");
+                    } else {
+                        for (var j = 1; j <= cbp[i].qty; j++) {
+                            $("<option />").val(j).text(j).appendTo("#qty");
+                        }
+                    }
+                }
+            }
+        }
+
+        var addProduct = function() {
+            var qty = $("#qty").val();
+            if (qty < 1) {
+                return alert("Quantity must be 1 or more");
+            }
+            var product_id = $("#product").val();
+            var p = null;
+            for (var i = 0; i < cbp.length; i++) {
+                if (cbp[i].product_id === parseInt(product_id)) p = cbp[i];
+            }
+            $('.ims-products').find('tr').each(function() {
+                var row = $(this);
+                if (row.find('td[data-product-id]').attr('data-product-id') === product_id) {
+                    row.remove();
+                }
+            })
+            var table = $(".ims-products");
+            var row = $("<tr />");
+            row.appendTo(table);
+            $("<td />").attr("data-brand-name", p.brand_name).text(p.brand_name).appendTo(row);
+            $("<td />").attr({ "data-product-id": p.product_id, "data-product-name": p.product_name }).text(p.product_name).appendTo(row);
+            $("<td />").html((p.image) ? "<img src='" + p.image + "' alt='" + p.product_name + "' />" : "").appendTo(row);
+            $("<td />").attr("data-sku", p.sku).text(p.sku).appendTo(row);
+            $("<td />").text(p.material).appendTo(row);
+            $("<td />").text(p.color).appendTo(row);
+            $("<td />").text(p.size).appendTo(row);
+            $("<td />").attr("data-qty", qty).text(qty).appendTo(row);
+            var button = $("<button />", {
+                type: "button",
+                class: "text-danger",
+                style: "border: none; background: none",
+                click: function() { row.remove() }
+            }).html('<i class="ti-trash"></i>');
+            $("<td />").html(button).appendTo(row);
+        }
+
+        var postData = function() {
+            var data = { products: [] };
+            $.each($('#form').serializeArray(), function(i, field) {
+                data[field.name] = field.value;
+            });
+            $('.ims-products').find('tr').each(function() {
+                var brand = $(this).find('td[data-brand-name]').attr('data-brand-name');
+                var id = $(this).find('td[data-product-id]').attr('data-product-id');
+                var name = $(this).find('td[data-product-name]').attr('data-product-name');
+                var sku = $(this).find('td[data-sku]').attr('data-sku');
+                var qty = $(this).find('td[data-qty]').attr('data-qty');
+                data.products.push({
+                    brand: brand,
+                    id: parseInt(id),
+                    name: name,
+                    sku: sku,
+                    qty: parseInt(qty)
+                })
+            })
+            $.ajax({
+                url: '/admin/orders',
+                type: 'POST',
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data: JSON.stringify(data),
+                success: function(msg) {
+                    console.log(msg)
+                    location.href = "/admin/orders"
+                },
+                error: function(error) {
+                    console.log(error)
+                    alert("Failed to submit the order\\n\\n" +
+                          error.status + " " + error.statusText + ":  " +
+                          error.responseJSON.message);
+                }
+            });
+        }
+    </script>
 @endsection
