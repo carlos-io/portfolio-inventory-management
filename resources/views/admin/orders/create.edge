@@ -260,11 +260,9 @@
                 dataType: 'json',
                 data: JSON.stringify(data),
                 success: function(msg) {
-                    console.log(msg)
                     location.href = "/admin/orders"
                 },
                 error: function(error) {
-                    console.log(error)
                     alert("Failed to submit the order\\n\\n" +
                           error.status + " " + error.statusText + ":  " +
                           error.responseJSON.message);
