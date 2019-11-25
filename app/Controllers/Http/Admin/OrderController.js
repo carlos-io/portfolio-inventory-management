@@ -20,7 +20,7 @@ class OrderController {
                 INNER JOIN inventory.users u
                     ON o.users_id = u.id
                 GROUP BY po.orders_id
-                ORDER BY created_at DESC
+                ORDER BY o.created_at DESC
             `)
             orders = orders[0]
             return view.render('/admin/orders/all', {orders})
