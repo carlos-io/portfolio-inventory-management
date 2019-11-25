@@ -42,14 +42,15 @@
                         <div class="col-sm-12 col-md-6">
                             <label class="col-form-label">Brand</label>
                             <select class="form-control custom-select" style="height: calc(2.65rem + 2px);" name="brand_id" required>
-                            @set('current_category', '')
-                            @each(cb in categories_brands)
-                                @if(current_category != cb.category_name)
-                                @set('current_category', cb.category_name)
-                                <option value="{{ cb.category_id}}" disabled>{{ cb.category_name }}</option>
-                                @endif
-                                <option value="{{ cb.brand_id }}">&nbsp;&nbsp;&nbsp;{{ cb.brand_name }}</option>
-                            @endeach
+                                <option value="" disabled selected hidden></option>
+                                @set('current_category', '')
+                                @each(cb in categories_brands)
+                                    @if(current_category != cb.category_name)
+                                        @set('current_category', cb.category_name)
+                                        <option value="{{ cb.category_id}}" disabled>{{ cb.category_name }}</option>
+                                    @endif
+                                    <option value="{{ cb.brand_id }}">&nbsp;&nbsp;&nbsp;{{ cb.brand_name }}</option>
+                                @endeach
                             </select>
                         </div>
                         <div class="col-sm-12 col-md-6">
