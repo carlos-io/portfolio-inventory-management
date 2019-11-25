@@ -35,7 +35,7 @@
                         </div>
                         <div class="col-sm-12 col-md-6">
                             <label for="address2" class="col-form-label">Address2</label>
-                            <input class="form-control" type="text" value="{{ order.address2 }}" id="address2" name="address2">
+                            <input class="form-control" type="text" value="{{ (order.address2) ? order.address2 : "" }}" id="address2" name="address2">
                         </div>
                     </div>
                     <div class="form-group row">
