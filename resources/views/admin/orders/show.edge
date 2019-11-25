@@ -37,20 +37,24 @@
                             <p>{{ order.country }}</p>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                             <div class="invoice-address">
                                 <h5>Payment</h5>
                                 <p>Type: {{ order.payment_type }}</p>
                                 <p>Invoice: {{ order.invoice }}</p>
+                                <p>Paid: ${{ order.paid_amount }}</p>
                                 <p>&nbsp;</p>
                                 <p>&nbsp;</p>
                             </div>
                         </div>
-                    <div class="col-md-4 text-md-right">
+                    <div class="col-md-5 text-md-right">
                         <ul class="invoice-date">
                             <li>Order Date:<span style="margin-left: 15px;">{{ order.created_at }}</span></li>
                             <li>Updated Date:<span style="margin-left: 15px;">{{ order.updated_at }}</span></li>
                             <li>Created by:<span style="margin-left: 15px;">{{ (order.user) ? order.user : "" }}</span></li>
+                            <li>&nbsp;</li>
+                            <li>&nbsp;</li>
+                            <li>&nbsp;</li>
                         </ul>
                     </div>
                 </div>

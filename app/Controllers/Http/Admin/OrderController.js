@@ -10,6 +10,7 @@ class OrderController {
                 SELECT o.id,
                        o.invoice,
                        o.payment_type,
+                       FORMAT(o.paid_amount, 2) AS paid_amount,
                        SUM(po.qty) AS items,
                        CONCAT(o.f_name, ' ', o.l_name) AS customer,
                        CONCAT(u.f_name, ' ', u.l_name) AS user,
@@ -46,6 +47,7 @@ class OrderController {
                     country,
                     payment_type,
                     invoice,
+                    paid_amount,
                     users_id
                 ) VALUES (
                     ${escape(form.f_name)},
@@ -58,6 +60,7 @@ class OrderController {
                     ${escape(form.country)},
                     ${escape(form.payment_type)},
                     ${escape(form.invoice)},
+                    ${escape(form.paid_amount)},
                     1
                 );
             `)
@@ -164,6 +167,7 @@ class OrderController {
                        o.country,
                        o.payment_type,
                        o.invoice,
+                       FORMAT(o.paid_amount, 2) AS paid_amount,
                        DATE_FORMAT(o.created_at, '%a %m/%d/%Y %h:%i %p') AS created_at,
                        DATE_FORMAT(o.updated_at, '%a %m/%d/%Y %h:%i %p') AS updated_at,
                        CONCAT(u.f_name, " ", u.l_name) AS user
@@ -221,7 +225,8 @@ class OrderController {
                        zipcode,
                        country,
                        payment_type,
-                       invoice
+                       invoice,
+                       FORMAT(paid_amount, 2) AS paid_amount
                 FROM inventory.orders
                 WHERE id = ${parseInt(params.id)}
             `)
@@ -268,7 +273,8 @@ class OrderController {
                     zipcode = ${escape(order.zipcode)},
                     country = ${escape(order.country)},
                     payment_type = ${escape(order.payment_type)},
-                    invoice = ${escape(order.invoice)}
+                    invoice = ${escape(order.invoice)},
+                    paid_amount = ${escape(order.paid_amount)}
                 WHERE id = ${parseInt(params.id)}
             `)
             return response.redirect('/admin/orders')
