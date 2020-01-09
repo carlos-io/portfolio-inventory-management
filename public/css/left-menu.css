@@ -1,19 +1,71 @@
-.sidebar-menu .sidebar-header .logo a span {
-    text-decoration: none;
-    color: rgba(200,200,200,1);
-    font-size: 40px;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-weight: 600;
+.sidebar-menu .sidebar-header .logo {
+    position: relative;
+    height: 80px;
 }
 
-.sidebar-menu .logo a i {
-    color: rgba(200,200,200,1);
-    font-size: 81px;
+.sidebar-menu .sidebar-header .logo a {
+    display: block;
+}
+
+.sidebar-menu .sidebar-header .logo a i {
+    color: rgb(38, 48, 58);
+    font-size: 90px;
     position: absolute;
-    z-index: 1;
-    top: 3px;
+    top: 0;
     left: 0;
     right: 0;
-    margin-right: 0 auto;
-    padding-right: 11px;
+    margin: 0 auto;
+    z-index: 1;
+    /* text-shadow: 0 0.5px #556179,
+                 1px 0 #556179; */
+}
+
+.sidebar-menu .sidebar-header .logo a div div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 2;
+    text-decoration: none;
+    color: rgb(211, 144, 72);
+    font-size: 40px;
+    font-weight: bold;
+    /* text-shadow: 0 -1.5px rgb(210, 140, 65),
+                 -1px -1px rgb(210, 140, 65); */
+}
+
+.sidebar-menu .sidebar-header .logo a div #logo-i {
+    top: 24px;
+    left: -48px;
+    transform: skewY(20deg);
+    color: rgb(137, 93, 47);
+}
+
+.sidebar-menu .sidebar-header .logo a div #logo-m-left {
+    top: 29px;
+    left: -19px;
+    width: 17px;
+    overflow: hidden;
+    transform: skewY(20deg);
+    color: rgb(137, 93, 47);
+}
+
+.sidebar-menu .sidebar-header .logo a div #logo-m-right {
+    top: 29px;
+    left: 14px;
+    width: 16px;
+    overflow: hidden;
+    transform: skewY(-20deg);
+}
+
+.sidebar-menu .sidebar-header .logo a div #logo-m-right span {
+    position: relative;
+    left: -19px;
+}
+
+.sidebar-menu .sidebar-header .logo a div #logo-s {
+    top: 22px;
+    left: 55px;
+    transform: skewY(-20deg);
 }
