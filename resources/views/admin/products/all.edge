@@ -40,23 +40,26 @@
                         <tbody class="ims-products">
                             @each(product in products)
                             <tr>
-                                <th scope="row">{{ product.id }}</th>
-                                <td><a href="/admin/products/{{ product.id }}">{{ product.name }}</a></td>
-                                <td>
+                                <th scope="row" onclick="window.location='/admin/products/{{ product.id }}'" style="cursor: pointer;">{{ product.id }}</th>
+                                <td onclick="window.location='/admin/products/{{ product.id }}'" style="cursor: pointer;">{{ product.name }}</td>
+                                <td onclick="window.location='/admin/products/{{ product.id }}'" style="cursor: pointer;">
                                     @if(product.image)
-                                    <a href="/admin/products/{{ product.id }}">
                                         <img alt="{{ product.name }}" src="{{ product.image }}">
-                                    </a>
                                     @endif
                                 </td>
-                                <td>{{ product.brand }}</td>
-                                <td>{{ product.category }}</td>
-                                <td>{{ product.sku }}</td>
-                                <td>{{ product.size }}</td>
-                                <td>{{ product.qty }}</td>
-                                <td>{{ product.updated_at }}</td>
+                                <td onclick="window.location='/admin/products/{{ product.id }}'" style="cursor: pointer;">{{ product.brand }}</td>
+                                <td onclick="window.location='/admin/products/{{ product.id }}'" style="cursor: pointer;">{{ product.category }}</td>
+                                <td onclick="window.location='/admin/products/{{ product.id }}'" style="cursor: pointer;">{{ product.sku }}</td>
+                                <td onclick="window.location='/admin/products/{{ product.id }}'" style="cursor: pointer;">{{ product.size }}</td>
+                                <td onclick="window.location='/admin/products/{{ product.id }}'" style="cursor: pointer;">{{ product.qty }}</td>
+                                <td onclick="window.location='/admin/products/{{ product.id }}'" style="cursor: pointer;">{{ product.updated_at }}</td>
                                 <td>
                                     <ul class="d-flex justify-content-center">
+                                        <li class="mr-3">
+                                            <a href="/admin/products/{{ product.id }}" class="text-secondary">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        </li>
                                         <li class="mr-3">
                                             <a href="/admin/products/{{ product.id }}/edit" class="text-secondary">
                                                 <i class="fa fa-edit"></i>
