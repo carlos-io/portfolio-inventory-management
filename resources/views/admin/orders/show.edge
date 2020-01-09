@@ -70,28 +70,23 @@
                                 <th class="text-center">color</th>
                                 <th class="text-center">size</th>
                                 <th class="text-center">qty</th>
+                                <th class="text-center">action</th>
                             </tr>
                         </thead>
                         <tbody class="ims-products text-center">
                             @each(product in products)
+                            @if(product.id)
+                            <tr onclick="window.location='/admin/products/{{ product.id }}'" style="cursor: pointer;">
+                            @else
                             <tr>
+                            @endif
                                 <td>{{ product.brand }}</td>
                                 <td>
-                                    @if(product.id)
-                                        <a href="/admin/products/{{ product.id }}">{{ product.name }}</a>
-                                    @else
-                                        {{ product.name }}
-                                    @endif
+                                    {{ product.name }}
                                 </td>
                                 <td>
                                     @if(product.image)
-                                        @if(product.id)
-                                            <a href="/admin/products/{{ product.id }}">
-                                                <img src="{{ product.image }}" alt="{{ product.name }}">
-                                            </a>
-                                        @else
-                                            <img src="{{ product.image }}" alt="{{ product.name }}">
-                                        @endif
+                                        <img src="{{ product.image }}" alt="{{ product.name }}">
                                     @endif
                                 </td>
                                 <td>{{ product.sku }}</td>
@@ -99,6 +94,17 @@
                                 <td>{{ (product.color) ? product.color : "" }}</td>
                                 <td>{{ (product.size) ? product.size : "" }}</td>
                                 <td>{{ product.qty }}</td>
+                                <td>
+                                    @if(product.id)
+                                    <ul class="d-flex justify-content-center">
+                                        <li class="mr-1">
+                                            <a href="/admin/products/{{ product.id }}" class="text-secondary">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    @endif
+                                </td>
                             </tr>
                             @endeach
                         </tbody>
