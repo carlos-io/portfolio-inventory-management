@@ -1,6 +1,7 @@
 'use strict'
 const Database = use('Database')
 const escape = use('sqlstring').escape
+const db = process.env.DB_DATABASE
 
 class ProductController {
     async index({view}) {
@@ -11,12 +12,12 @@ class ProductController {
                        c.name AS category,
                        CONCAT(u.f_name, ' ', u.l_name) AS user,
                        DATE_FORMAT(p.updated_at, '%a %b %d %Y %h:%i %p') AS updated_at
-                FROM inventory.products p
-                INNER JOIN inventory.brands b
+                FROM ${db}.products p
+                INNER JOIN ${db}.brands b
                     ON p.brands_id = b.id
-                INNER JOIN inventory.categories c
+                INNER JOIN ${db}.categories c
                     ON b.categories_id = c.id
-                INNER JOIN inventory.users u
+                INNER JOIN ${db}.users u
                     ON p.users_id = u.id
                 ORDER BY p.name, category ASC
             `)
@@ -47,7 +48,7 @@ class ProductController {
                 }
             }
             await Database.raw(`
-                INSERT INTO inventory.products (
+                INSERT INTO ${db}.products (
                     name,
                     ${(product.description) ? 'description,' : ''}
                     ${(imageName) ? 'image,' : ''}
@@ -79,8 +80,8 @@ class ProductController {
                        c.name AS category_name,
                        b.id AS brand_id,
                        b.name AS brand_name
-                FROM inventory.brands b
-                INNER JOIN inventory.categories c
+                FROM ${db}.brands b
+                INNER JOIN ${db}.categories c
                 ON b.categories_id = c.id
                 ORDER BY category_name, brand_name
             `)
@@ -96,7 +97,7 @@ class ProductController {
             let product = await Database.raw(`
                 SELECT id, name, description, image, sku,
                        material, color, size, qty
-                FROM inventory.products
+                FROM ${db}.products
                 WHERE id = ${parseInt(params.id)}
             `)
             product = product[0][0]
@@ -111,7 +112,7 @@ class ProductController {
             let product = await Database.raw(`
                 SELECT id, name, description, image, sku,
                        material, color, size, qty, brands_id
-                FROM inventory.products
+                FROM ${db}.products
                 WHERE id = ${parseInt(params.id)}
             `)
             let categories_brands = await Database.raw(`
@@ -119,8 +120,8 @@ class ProductController {
                        c.name AS category_name,
                        b.id AS brand_id,
                        b.name AS brand_name
-                FROM inventory.brands b
-                INNER JOIN inventory.categories c
+                FROM ${db}.brands b
+                INNER JOIN ${db}.categories c
                     ON b.categories_id = c.id
                 ORDER BY category_name, brand_name
             `)
@@ -152,7 +153,7 @@ class ProductController {
                 }
             }
             await Database.raw(`
-                UPDATE inventory.products
+                UPDATE ${db}.products
                 SET name = ${escape(product.name)},
                     ${(product.description) ? 'description = ' + escape(product.description) + ',' : ''}
                     ${(imageName) ? 'image = ' + escape('/images/ims/products/' + imageName) + ',' : ''}
@@ -173,7 +174,7 @@ class ProductController {
     async delete({view, response, params}) {
         try {
             await Database.raw(`
-                DELETE FROM inventory.products
+                DELETE FROM ${db}.products
                 WHERE id = ${parseInt(params.id)}
             `)
             return response.redirect('/admin/products')

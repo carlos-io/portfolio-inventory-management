@@ -2,6 +2,7 @@
 const Database = use('Database')
 const escape = use('sqlstring').escape
 const country = use('countryjs')
+const db = process.env.DB_DATABASE
 
 class OrderController {
     async index({view}) {
@@ -15,10 +16,10 @@ class OrderController {
                        CONCAT(o.f_name, ' ', o.l_name) AS customer,
                        CONCAT(u.f_name, ' ', u.l_name) AS user,
                        DATE_FORMAT(o.created_at, '%a %b %d %Y %h:%i %p') AS created_at
-                FROM inventory.product_orders po
-                INNER JOIN inventory.orders o
+                FROM ${db}.product_orders po
+                INNER JOIN ${db}.orders o
                     ON po.orders_id = o.id
-                INNER JOIN inventory.users u
+                INNER JOIN ${db}.users u
                     ON o.users_id = u.id
                 GROUP BY po.orders_id
                 ORDER BY o.created_at DESC
@@ -36,7 +37,7 @@ class OrderController {
         let productsUpdated = {};
         try {
             const response = await Database.raw(`
-                INSERT INTO inventory.orders (
+                INSERT INTO ${db}.orders (
                     f_name,
                     l_name,
                     address,
@@ -67,7 +68,7 @@ class OrderController {
             lastInsertId = response[0].insertId;
             for (let product of form.products) {
                 await Database.raw(`
-                    INSERT INTO inventory.product_orders (
+                    INSERT INTO ${db}.product_orders (
                         products_id,
                         orders_id,
                         brand,
@@ -84,12 +85,12 @@ class OrderController {
                     )
                 `)
                 let oldQty = await Database.raw(`
-                    SELECT qty FROM inventory.products WHERE id = ${parseInt(product.id)}
+                    SELECT qty FROM ${db}.products WHERE id = ${parseInt(product.id)}
                 `)
                 oldQty = oldQty[0][0].qty
                 productsUpdated[product.id] = { oldQty: oldQty }
                 await Database.raw(`
-                    UPDATE inventory.products
+                    UPDATE ${db}.products
                     SET qty = ${parseInt(oldQty - product.qty)}
                     WHERE id = ${parseInt(product.id)}
                 `)
@@ -98,12 +99,12 @@ class OrderController {
         } catch (error) {
             if (lastInsertId) {
                 await Database.raw(`
-                    DELETE FROM inventory.orders
+                    DELETE FROM ${db}.orders
                     WHERE id = ${parseInt(lastInsertId)}
                 `)
                 for (let product of form.products) {
                     await Database.raw(`
-                        UPDATE inventory.products
+                        UPDATE ${db}.products
                         SET qty = ${parseInt(productsUpdated[product.id].oldQty)}
                         WHERE id = ${parseInt(product.id)}
                     `)
@@ -128,10 +129,10 @@ class OrderController {
                        p.color,
                        p.size,
                        p.qty
-                FROM inventory.products p
-                INNER JOIN inventory.brands b
+                FROM ${db}.products p
+                INNER JOIN ${db}.brands b
                     ON p.brands_id = b.id
-                INNER JOIN inventory.categories c
+                INNER JOIN ${db}.categories c
                     ON b.categories_id = c.id
                 ORDER BY category_name,
                          brand_name,
@@ -171,8 +172,8 @@ class OrderController {
                        DATE_FORMAT(o.created_at, '%a %m/%d/%Y %h:%i %p') AS created_at,
                        DATE_FORMAT(o.updated_at, '%a %m/%d/%Y %h:%i %p') AS updated_at,
                        CONCAT(u.f_name, " ", u.l_name) AS user
-                FROM inventory.orders o
-                INNER JOIN inventory.users u
+                FROM ${db}.orders o
+                INNER JOIN ${db}.users u
                     ON o.users_id = u.id
                 WHERE o.id = ${parseInt(params.id)}
             `)
@@ -187,10 +188,10 @@ class OrderController {
                        p.color,
                        p.size,
                        po.qty
-                FROM inventory.product_orders po
-                INNER JOIN inventory.orders o
+                FROM ${db}.product_orders po
+                INNER JOIN ${db}.orders o
                     ON po.orders_id = o.id
-                LEFT JOIN inventory.products p
+                LEFT JOIN ${db}.products p
                     ON po.products_id = p.id
                 WHERE o.id = ${parseInt(params.id)}
                 ORDER BY brand,
@@ -227,7 +228,7 @@ class OrderController {
                        payment_type,
                        invoice,
                        FORMAT(paid_amount, 2) AS paid_amount
-                FROM inventory.orders
+                FROM ${db}.orders
                 WHERE id = ${parseInt(params.id)}
             `)
             order = order[0][0]
@@ -240,10 +241,10 @@ class OrderController {
                        p.color,
                        p.size,
                        po.qty
-                FROM inventory.product_orders po
-                INNER JOIN inventory.orders o
+                FROM ${db}.product_orders po
+                INNER JOIN ${db}.orders o
                     ON po.orders_id = o.id
-                LEFT JOIN inventory.products p
+                LEFT JOIN ${db}.products p
                     ON po.products_id = p.id
                 WHERE o.id = ${parseInt(params.id)}
                 ORDER BY brand,
@@ -263,7 +264,7 @@ class OrderController {
         try {
             const order = request.post()
             await Database.raw(`
-                UPDATE inventory.orders
+                UPDATE ${db}.orders
                 SET f_name = ${escape(order.f_name)},
                     l_name = ${escape(order.l_name)},
                     address = ${escape(order.address)},
@@ -286,7 +287,7 @@ class OrderController {
     async delete({view, response, params}) {
         try {
             await Database.raw(`
-                DELETE FROM inventory.orders
+                DELETE FROM ${db}.orders
                 WHERE id = ${parseInt(params.id)}
             `)
             return response.redirect('/admin/orders')

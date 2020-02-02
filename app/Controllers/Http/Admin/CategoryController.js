@@ -1,6 +1,7 @@
 'use strict'
 const Database = use('Database')
 const escape = use('sqlstring').escape
+const db = process.env.DB_DATABASE
 
 class CategoryController {
     async index({view}) {
@@ -9,8 +10,8 @@ class CategoryController {
                 SELECT c.id, c.name,
                        CONCAT(u.f_name, ' ', u.l_name) AS user,
                        DATE_FORMAT(c.updated_at, '%a %b %d %Y %h:%i %p') AS updated_at
-                FROM inventory.categories c
-                INNER JOIN inventory.users u
+                FROM ${db}.categories c
+                INNER JOIN ${db}.users u
                 ON c.users_id = u.id
                 ORDER BY c.name ASC
             `)
@@ -25,7 +26,7 @@ class CategoryController {
         try {
             const category = request.post()
             await Database.raw(`
-                INSERT INTO inventory.categories (name, users_id)
+                INSERT INTO ${db}.categories (name, users_id)
                 VALUES (${escape(category.name)}, 1)
             `)
             return response.redirect('/admin/categories')
@@ -42,7 +43,7 @@ class CategoryController {
         try {
             let category = await Database.raw(`
                 SELECT id, name, users_id
-                FROM inventory.categories
+                FROM ${db}.categories
                 WHERE id = ${parseInt(params.id)}
             `)
             category = category[0][0]
@@ -57,7 +58,7 @@ class CategoryController {
         try {
             const category = request.post()
             await Database.raw(`
-                UPDATE inventory.categories
+                UPDATE ${db}.categories
                 SET name = ${escape(category.name)}
                 WHERE id = ${parseInt(params.id)}
             `)
@@ -70,7 +71,7 @@ class CategoryController {
     async delete({view, response, params}) {
         try {
             await Database.raw(`
-                DELETE FROM inventory.categories
+                DELETE FROM ${db}.categories
                 WHERE id = ${parseInt(params.id)}
             `)
             return response.redirect('/admin/categories')

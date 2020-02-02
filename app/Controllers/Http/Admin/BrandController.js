@@ -1,6 +1,7 @@
 'use strict'
 const Database = use('Database')
 const escape = use('sqlstring').escape
+const db = process.env.DB_DATABASE
 
 class BrandController {
     async index({view}) {
@@ -9,10 +10,10 @@ class BrandController {
                 SELECT b.id, b.name, b.image, c.name AS category,
                        CONCAT(u.f_name, ' ', u.l_name) AS user,
                        DATE_FORMAT(b.updated_at, '%a %b %d %Y %h:%i %p') AS updated_at
-                FROM inventory.brands b
-                INNER JOIN inventory.categories c
+                FROM ${db}.brands b
+                INNER JOIN ${db}.categories c
                     ON b.categories_id = c.id
-                INNER JOIN inventory.users u
+                INNER JOIN ${db}.users u
                     ON b.users_id = u.id
                 ORDER BY b.name, category ASC
             `)
@@ -43,7 +44,7 @@ class BrandController {
                 }
             }
             await Database.raw(`
-                INSERT INTO inventory.brands (
+                INSERT INTO ${db}.brands (
                     name,
                     ${(imageName) ? 'image,' : ''}
                     categories_id, users_id
@@ -64,7 +65,7 @@ class BrandController {
     async create({view}) {
         try {
             let categories = await Database.raw(`
-                SELECT id, name FROM inventory.categories
+                SELECT id, name FROM ${db}.categories
             `)
             categories = categories[0]
             return view.render('/admin/brands/create', {categories})
@@ -79,13 +80,13 @@ class BrandController {
                 SELECT b.id, b.name, b.image, b.users_id,
                        c.id AS category_id,
                        c.name AS category_name
-                FROM inventory.brands b
-                INNER JOIN inventory.categories c
+                FROM ${db}.brands b
+                INNER JOIN ${db}.categories c
                 ON b.categories_id = c.id
                 WHERE b.id = ${parseInt(params.id)}
             `)
             let categories = await Database.raw(`
-                SELECT id, name FROM inventory.categories
+                SELECT id, name FROM ${db}.categories
             `)
             brand = brand[0][0]
             categories = categories[0]
@@ -115,7 +116,7 @@ class BrandController {
                 }
             }
             await Database.raw(`
-                UPDATE inventory.brands
+                UPDATE ${db}.brands
                 SET name = ${escape(brand.name)},
                     ${(imageName) ? 'image = ' + escape('/images/ims/brands/' + imageName) + ',' : ''}
                     categories_id = ${parseInt(brand.category)}
@@ -130,7 +131,7 @@ class BrandController {
     async delete({view, response, params}) {
         try {
             await Database.raw(`
-                DELETE FROM inventory.brands
+                DELETE FROM ${db}.brands
                 WHERE id = ${parseInt(params.id)}
             `)
             return response.redirect('/admin/brands')

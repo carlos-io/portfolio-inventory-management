@@ -2,11 +2,12 @@
 
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
+const db = process.env.DB_DATABASE
 
 class AddOrdersSchema extends Schema {
   up () {
     this.raw(`
-      CREATE TABLE inventory.orders (
+      CREATE TABLE ${db}.orders (
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         f_name VARCHAR(60) NOT NULL,
         l_name VARCHAR(60) NOT NULL,
@@ -28,7 +29,7 @@ class AddOrdersSchema extends Schema {
   }
 
   down () {
-    this.raw(`DROP TABLE inventory.orders`)
+    this.raw(`DROP TABLE ${db}.orders`)
   }
 }
 

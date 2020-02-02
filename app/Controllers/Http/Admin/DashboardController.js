@@ -1,6 +1,7 @@
 'use strict'
 const Database = use('Database')
 const country = use('countryjs')
+const db = process.env.DB_DATABASE
 
 class DashboardController {
     async index({view}) {
@@ -8,8 +9,8 @@ class DashboardController {
             const sales = (await Database.raw(`
                 SELECT DATE_FORMAT(o.created_at, '%m-%d-%Y') AS date,
                        FORMAT(SUM(o.paid_amount), 2) AS total
-                FROM inventory.product_orders po
-                INNER JOIN inventory.orders o
+                FROM ${db}.product_orders po
+                INNER JOIN ${db}.orders o
                     ON po.orders_id = o.id
                 GROUP BY date
             `))[0]
@@ -17,19 +18,19 @@ class DashboardController {
             const products = (await Database.raw(`
                 SELECT product,
                 SUM(qty) AS total
-                FROM inventory.product_orders
+                FROM ${db}.product_orders
                 GROUP BY product, sku
             `))[0]
             const categories = (await Database.raw(`
                 SELECT po.sku,
                        SUM(po.qty) AS total,
                        ANY_VALUE(c.name) AS category
-                FROM inventory.product_orders po
-                INNER JOIN inventory.products p
+                FROM ${db}.product_orders po
+                INNER JOIN ${db}.products p
                     ON po.products_id = p.id
-                INNER JOIN inventory.brands b
+                INNER JOIN ${db}.brands b
                     ON p.brands_id = b.id
-                INNER JOIN inventory.categories c
+                INNER JOIN ${db}.categories c
                     ON b.categories_id = c.id
                 GROUP BY po.sku
             `))[0]
@@ -37,10 +38,10 @@ class DashboardController {
                 SELECT po.sku,
                        SUM(po.qty) AS total,
                        ANY_VALUE(b.name) AS brand
-                FROM inventory.product_orders po
-                INNER JOIN inventory.products p
+                FROM ${db}.product_orders po
+                INNER JOIN ${db}.products p
                     ON po.products_id = p.id
-                INNER JOIN inventory.brands b
+                INNER JOIN ${db}.brands b
                     ON p.brands_id = b.id
                 GROUP BY po.sku
             `))[0]
@@ -52,8 +53,8 @@ class DashboardController {
                 SELECT po.product,
                        SUM(po.qty) AS total,
                        o.country
-                FROM inventory.product_orders po
-                INNER JOIN inventory.orders o
+                FROM ${db}.product_orders po
+                INNER JOIN ${db}.orders o
                     ON po.orders_id = o.id
                 GROUP BY o.country, product
             `))[0]
