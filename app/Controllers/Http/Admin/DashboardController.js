@@ -24,7 +24,7 @@ class DashboardController {
             const categories = (await Database.raw(`
                 SELECT po.sku,
                        SUM(po.qty) AS total,
-                       ANY_VALUE(c.name) AS category
+                       MAX(c.name) AS category
                 FROM ${db}.product_orders po
                 INNER JOIN ${db}.products p
                     ON po.products_id = p.id
@@ -37,7 +37,7 @@ class DashboardController {
             const brands = (await Database.raw(`
                 SELECT po.sku,
                        SUM(po.qty) AS total,
-                       ANY_VALUE(b.name) AS brand
+                       MAX(b.name) AS brand
                 FROM ${db}.product_orders po
                 INNER JOIN ${db}.products p
                     ON po.products_id = p.id
