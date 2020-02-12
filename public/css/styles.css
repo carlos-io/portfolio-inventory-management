@@ -166,7 +166,7 @@
 }
 
 .metismenu li a i {
-    color: rgb(255, 161, 61);
+    color: #d6dadf;
     -webkit-transition: all 0.3s ease 0s;
     transition: all 0.3s ease 0s;
 }
@@ -687,7 +687,7 @@ ul.breadcrumbs {
     display: block;
     font-size: 14px;
     font-weight: 500;
-    color: rgb(255, 132, 0);
+    color: #0379ff;
     letter-spacing: 0;
     margin-right: 16px;
     position: relative;

@@ -407,7 +407,7 @@ img {
 /* Colors */
 
 :root {
-    --primary-color: rgb(240, 133, 18);
+    --primary-color: #0379ff;
 }
 
 #preloader {
