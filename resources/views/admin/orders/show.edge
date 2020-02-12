@@ -22,7 +22,7 @@
                         <div class="iv-left col-6">
                             <span>Order</span>
                         </div>
-                        <div class="iv-right col-6 text-md-right">
+                        <div class="iv-right col-6 text-md-right text-right">
                             <span style="font-size: 1.7rem;">#{{ order.id }}</span>
                         </div>
                     </div>
@@ -114,13 +114,13 @@
                 </div>
             </div>
             <div class="row text-right">
-                <div class="col-sm-12 col-md-8 col-8"></div>
-                <div class="col-sm-12 col-md-2 col-2">
+                <div class="col-sm-12 col-md-8"></div>
+                <div class="col-sm-12 col-md-2 col-12">
                     <a href="/admin/orders/{{ order.id }}/edit" class="btn btn-primary btn-lg btn-block mb-3">
                         <i class="fa fa-edit"></i> Edit
                     </a>
                 </div>
-                <div class="col-sm-12 col-md-2 col-2">
+                <div class="col-sm-12 col-md-2 col-12">
                     <form action="/admin/orders/{{ order.id }}/delete?_method=DELETE" method="post">
                         {{ csrfField() }}
                         <button type="submit" class="btn btn-danger btn-lg btn-block mb-3"
