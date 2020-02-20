@@ -16,3 +16,5 @@ database/*.sqlite
 .idea
 
 public/srtdash/
+
+backup/
